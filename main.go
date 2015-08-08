@@ -1,11 +1,12 @@
 package main
 
 import (
-	"encoding/json"
+	//"encoding/json"
+	//"errors"
 	"fmt"
 	"os"
 	"os/exec"
-	"strconv"
+	//"strconv"
 	"strings"
 	"text/template"
 )
@@ -18,91 +19,23 @@ const (
 	TEMPLATE_PARSE_FAILED = iota
 )
 
-type Directive struct {
-	template string
-	result   string
-	command  string
-	tags     []string
-}
-
 type Member struct {
-	Name     string
-	Addr     string
-	Port     int
-	Tags     map[string]string
-	Status   string
-	Protocol map[string]int
-}
-
-type Serf_Output struct {
-	Members []Member
+	Name string
+	Addr string
+	Role string
+	Tags map[string]string
 }
 
 func main() {
-	args_len := len(os.Args)
-	directives_len := args_len - 1
-	directives := make([]Directive, directives_len)
-	// for each args, parse into directives
-	for i := 1; i < args_len; i = i + 1 {
-		// split it into parts
-		// 1st part: path to template file
-		// 2nd part: path to result file
-		// 3nd part: command to execute, optional
-		// remaining parts: filter tags
-		parts := strings.Split(os.Args[i], ":")
-		parts_len := len(parts)
-		// check number
-		if parts_len < 2 {
-			os.Exit(SYNTAX_ERROR)
-		}
-		for i := 0; i < parts_len; i = i + 1 {
-			if len(parts[i]) == 0 {
-				os.Exit(SYNTAX_ERROR)
-			}
-		}
-		// register directive
-		directives[i-1] = Directive{
-			template: parts[0],
-			result:   parts[1],
-		}
-		if parts_len > 2 {
-			directives[i-1].command = parts[2]
-		}
-		if parts_len > 3 {
-			directives[i-1].tags = make([]string, parts_len-3)
-			for j := 0; j < parts_len-3; j = j + 1 {
-				directives[i-1].tags[j] = parts[3+j]
-			}
-		}
+	directives, err := ParseDirectives(os.Args[1:])
+	if err != nil {
+		panic(err)
 	}
+	directives_len := len(directives)
 
+	var members []Member
 	// render template for each directives
 	for i := 0; i < directives_len; i = i + 1 {
-		// retrive serf member list
-		cmd_args := []string{"members", "-format", "json"}
-		for j := 0; j < len(directives[i].tags); j = j + 1 {
-			cmd_args = append(cmd_args, "-tag")
-			cmd_args = append(cmd_args, directives[i].tags[j])
-		}
-		cmd := exec.Command("serf", cmd_args...)
-		out, err := cmd.Output()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(CMD_FAILED)
-		}
-
-		// parse serf members
-		var serf_output Serf_Output
-		err = json.Unmarshal(out, &serf_output)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(CMD_FAILED)
-		}
-		members := serf_output.Members
-		for m := 0; m < len(members); m++ {
-			members[m].Addr = strings.Split(members[m].Addr, ":"+strconv.Itoa(members[m].Port))[0]
-		}
-
 		// parse template
 		tpl, err := template.ParseFiles(directives[i].template)
 		if err != nil {
@@ -124,12 +57,14 @@ func main() {
 		}
 
 		// execute command
-		cmd2_args := strings.Split(directives[i].command, " ")
-		cmd2 := exec.Command(cmd2_args[0], cmd2_args[1:]...)
-		err = cmd2.Run()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(CMD_FAILED)
+		if directives[i].command != "" {
+			cmd_args := strings.Split(directives[i].command, " ")
+			cmd := exec.Command(cmd_args[0], cmd_args[1:]...)
+			err = cmd.Run()
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(CMD_FAILED)
+			}
 		}
 	}
 
