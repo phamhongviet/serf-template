@@ -38,8 +38,8 @@ Example:
 
 The above template file would produce a file like this:
 
-	server web-1 at 172.17.0.21:7946 with 7946
-	server web-2 at 172.17.0.22:7946 with 7946
-	server web-3 at 172.17.0.23:7946 with 7946
+	server web-1 at 172.17.0.21 with 7946
+	server web-2 at 172.17.0.22 with 7946
+	server web-3 at 172.17.0.23 with 7946
 
 [Go Template]: http://golang.org/pkg/text/template/ "Go Template"

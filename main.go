@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"text/template"
 )
@@ -98,6 +99,9 @@ func main() {
 			os.Exit(CMD_FAILED)
 		}
 		members := serf_output.Members
+		for m := 0; m < len(members); m++ {
+			members[m].Addr = strings.Split(members[m].Addr, ":"+strconv.Itoa(members[m].Port))[0]
+		}
 
 		// parse template
 		tpl, err := template.ParseFiles(directives[i].template)
