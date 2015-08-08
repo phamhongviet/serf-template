@@ -5,16 +5,16 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-	//"io/ioutil"
-	//"text/template"
 	"encoding/json"
+	"text/template"
 )
 
 // exit codes
 const (
-	OK           = iota
-	SYNTAX_ERROR = iota
-	CMD_FAILED   = iota
+	OK                    = iota
+	SYNTAX_ERROR          = iota
+	CMD_FAILED            = iota
+	TEMPLATE_PARSE_FAILED = iota
 )
 
 type Directive struct {
@@ -77,6 +77,7 @@ func main() {
 
 	// render template for each directives
 	for i := 0; i < directives_len; i = i + 1 {
+		// retrive serf member list
 		cmd_args := []string{"members", "-format", "json"}
 		for j := 0; j < len(directives[i].tags); j = j + 1 {
 			cmd_args = append(cmd_args, "-tag")
@@ -88,15 +89,35 @@ func main() {
 			fmt.Println(err)
 			os.Exit(CMD_FAILED)
 		}
+
+		// parse serf members
 		var serf_output Serf_Output
 		err = json.Unmarshal(out, &serf_output)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(CMD_FAILED)
 		}
-		fmt.Println(&serf_output)
-		//		tpl = template.ParseFiles(directives[i].template)
-		//		tpl.Execute
+		members := serf_output.Members
+
+		// parse template
+		tpl, err := template.ParseFiles(directives[i].template)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(TEMPLATE_PARSE_FAILED)
+		}
+
+		// render template
+		result_file, err := os.Create(directives[i].result)
+		defer result_file.Close()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(TEMPLATE_PARSE_FAILED)
+		}
+		err = tpl.Execute(result_file, members)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(TEMPLATE_PARSE_FAILED)
+		}
 	}
 
 	os.Exit(OK)
