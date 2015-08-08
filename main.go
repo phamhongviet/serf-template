@@ -1,11 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
 	"strings"
-	"encoding/json"
 	"text/template"
 )
 
@@ -117,6 +117,15 @@ func main() {
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(TEMPLATE_PARSE_FAILED)
+		}
+
+		// execute command
+		cmd2_args := strings.Split(directives[i].command, " ")
+		cmd2 := exec.Command(cmd2_args[0], cmd2_args[1:]...)
+		err = cmd2.Run()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(CMD_FAILED)
 		}
 	}
 
