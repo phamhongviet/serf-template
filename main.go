@@ -1,16 +1,20 @@
 package main
 
 import (
-	//"fmt"
+	"fmt"
 	"os"
-	//"os/exec"
+	"os/exec"
 	"strings"
+	//"io/ioutil"
+	//"text/template"
+	"encoding/json"
 )
 
 // exit codes
 const (
 	OK           = iota
 	SYNTAX_ERROR = iota
+	CMD_FAILED   = iota
 )
 
 type Directive struct {
@@ -20,10 +24,24 @@ type Directive struct {
 	tags     []string
 }
 
+type Member struct {
+	Name     string
+	Addr     string
+	Port     int
+	Tags     map[string]string
+	Status   string
+	Protocol map[string]int
+}
+
+type Serf_Output struct {
+	Members []Member
+}
+
 func main() {
 	args_len := len(os.Args)
-	directives := make([]Directive, args_len-1)
-	// for each args
+	directives_len := args_len - 1
+	directives := make([]Directive, directives_len)
+	// for each args, parse into directives
 	for i := 1; i < args_len; i = i + 1 {
 		// split it into parts
 		// 1st part: path to template file
@@ -52,9 +70,33 @@ func main() {
 		if parts_len > 3 {
 			directives[i-1].tags = make([]string, parts_len-3)
 			for j := 0; j < parts_len-3; j = j + 1 {
-				directives[i-1].tags[j] = parts[2+j]
+				directives[i-1].tags[j] = parts[3+j]
 			}
 		}
+	}
+
+	// render template for each directives
+	for i := 0; i < directives_len; i = i + 1 {
+		cmd_args := []string{"members", "-format", "json"}
+		for j := 0; j < len(directives[i].tags); j = j + 1 {
+			cmd_args = append(cmd_args, "-tag")
+			cmd_args = append(cmd_args, directives[i].tags[j])
+		}
+		cmd := exec.Command("serf", cmd_args...)
+		out, err := cmd.Output()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(CMD_FAILED)
+		}
+		var serf_output Serf_Output
+		err = json.Unmarshal(out, &serf_output)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(CMD_FAILED)
+		}
+		fmt.Println(&serf_output)
+		//		tpl = template.ParseFiles(directives[i].template)
+		//		tpl.Execute
 	}
 
 	os.Exit(OK)
