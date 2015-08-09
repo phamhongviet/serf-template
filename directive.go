@@ -17,8 +17,8 @@ type Directive struct {
 	Role      string
 	Status    string
 	Tags      []string
-	Rpc_addr  string
-	Rpc_auth  string
+	Rpc_addr  string `json:"rpc-addr"`
+	Rpc_auth  string `json:"rpc-auth"`
 	Templates []Template
 }
 

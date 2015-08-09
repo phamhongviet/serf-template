@@ -1,9 +1,9 @@
 package main
 
 import (
-	"text/template"
 	"os"
-	)
+	"text/template"
+)
 
 func RenderTemplate(src string, dest string, env interface{}) {
 	// parse template
