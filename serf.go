@@ -13,11 +13,11 @@ func ConstructSerfCommand(drt Directive) (name string, args []string, err error)
 	if drt.Name != "" {
 		args = append(args, "-name", drt.Name)
 	}
-	if drt.Role != "" {
-		args = append(args, "-role", drt.Role)
-	}
 	if drt.Status != "" {
 		args = append(args, "-status", drt.Status)
+	}
+	if drt.Role != "" {
+		args = append(args, "-tag", "role="+drt.Role)
 	}
 	for i := 0; i < len(drt.Tags); i++ {
 		args = append(args, "-tag", drt.Tags[i])
