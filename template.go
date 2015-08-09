@@ -1,6 +1,9 @@
 package main
 
-import "text/template"
+import (
+	"text/template"
+	"os"
+	)
 
 func RenderTemplate(src string, dest string, env interface{}) {
 	// parse template
@@ -15,7 +18,7 @@ func RenderTemplate(src string, dest string, env interface{}) {
 	if err != nil {
 		panic(err)
 	}
-	err = tpl.Execute(result_file, members)
+	err = tpl.Execute(result_file, env)
 	if err != nil {
 		panic(err)
 	}

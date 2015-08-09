@@ -1,8 +1,5 @@
 package main
 
-import "strings"
-import "errors"
-
 type Member struct {
 	Name     string
 	Addr     string
