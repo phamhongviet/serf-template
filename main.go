@@ -2,13 +2,14 @@ package main
 
 import (
 	//"encoding/json"
-	//"errors"
-	"fmt"
+	"errors"
+	//"fmt"
 	"os"
 	"os/exec"
 	//"strconv"
-	"strings"
-	"text/template"
+	"log"
+	//"strings"
+	//"text/template"
 )
 
 // exit codes
@@ -19,52 +20,65 @@ const (
 	TEMPLATE_PARSE_FAILED = iota
 )
 
+const (
+	DEBUG      = false
+	DEBUG_FILE = "/tmp/serf_template.log"
+)
+
 func main() {
-	directives, err := ParseDirectives(os.Args[1:])
+	if DEBUG {
+		log_file, _ := os.Create(DEBUG_FILE)
+		defer log_file.Close()
+		log.SetOutput(log_file)
+		log.Println("Serf Template starting")
+	}
+
+	if len(os.Args) != 2 {
+		err := errors.New("No config file")
+		panic(err)
+	}
+
+	// parse directive from config file
+	directives, err := ParseDirectives(os.Args[1])
 	if err != nil {
 		panic(err)
 	}
-	directives_len := len(directives)
 
-	var members []Member
-	for {
-		var name, addr, role, tags string
-		_, err = fmt.Scanf("%s\t%s\t%s\t%s", &name, &addr, &role, &tags)
-		if err != nil {
-			panic(err)
-		}
-		members, err = AddMember(members, name, addr, role, tags)
-		// render template for each directives
-		for i := 0; i < directives_len; i = i + 1 {
-			// parse template
-			tpl, err := template.ParseFiles(directives[i].template)
-			if err != nil {
-				fmt.Println(err)
-				os.Exit(TEMPLATE_PARSE_FAILED)
-			}
+	if DEBUG {
+		log.Printf("directives: %s", directives)
+	}
 
-			// render template
-			result_file, err := os.Create(directives[i].result)
-			defer result_file.Close()
-			if err != nil {
-				fmt.Println(err)
-				os.Exit(TEMPLATE_PARSE_FAILED)
-			}
-			err = tpl.Execute(result_file, members)
-			if err != nil {
-				fmt.Println(err)
-				os.Exit(TEMPLATE_PARSE_FAILED)
-			}
+	// construct serf command from directive
+	cmd_name, cmd_args, err := ConstructSerfCommand(directives)
+	if err != nil {
+		panic(err)
+	}
 
-			// execute command
-			if directives[i].command != "" {
-				cmd_args := strings.Split(directives[i].command, " ")
-				cmd := exec.Command(cmd_args[0], cmd_args[1:]...)
-				err = cmd.Run()
-				if err != nil {
-					fmt.Println(err)
-					os.Exit(CMD_FAILED)
-				}
+	// exec serf command
+	cmd := exec.Command(cmd_name, cmd_args...)
+	members_json, err := cmd.Output()
+	if err != nil {
+		panic(err)
+	}
+
+	// parse members
+	members, err := ParseMembers(members_json)
+	if err != nil {
+		panic(err)
+	}
+
+	// for each templates:
+	// - render template
+	// - execute command if any
+	for i := 0; i < len(directives.Templates); i++ {
+		RenderTemplate(directives.Templates[i].Src, directives.Templates[i].Dest, members)
+
+		if directives.Templates[i].Command != "" {
+			cmd2_args := strings.Split(directives.Templates[i].Command, " ")
+			cmd2 = exec.Command(cmd2_args[0], cmd2_args[1:])
+			err := cmd2.Run()
+			if err != nil {
+				panic(err)
 			}
 		}
 	}
