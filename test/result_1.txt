@@ -1,0 +1,6 @@
+BEGIN
+server web-1 at 172.16.0.21 with serf at 7946 and nginx at 8080
+server web-2 at 172.16.0.22 with serf at 7946 and nginx at 8080
+server web-3 at 172.16.0.23 with serf at 7946 and httpd at 80
+
+END
