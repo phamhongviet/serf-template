@@ -1,6 +1,7 @@
 package main
 
-func ConstructSerfCommand(drt Directive) name string, args []string, error {
+func ConstructSerfCommand(drt Directive) (name string, args []string, err error) {
+	err = nil
 	if drt.Serf != "" {
 		name = drt.Serf
 	} else {
@@ -21,11 +22,11 @@ func ConstructSerfCommand(drt Directive) name string, args []string, error {
 	for i := 0; i < len(drt.Tags); i++ {
 		args = append(args, "-tag", drt.Tags[i])
 	}
-	if drt.Rpc-addr != "" {
-		args = append(args, "-rpc-addr", drt.Rpc-addr)
+	if drt.Rpc_addr != "" {
+		args = append(args, "-rpc-addr", drt.Rpc_addr)
 	}
-	if drt.Rpc-auth != "" {
-		args = append(args, "-rpc-auth", drt.Rpc-auth)
+	if drt.Rpc_auth != "" {
+		args = append(args, "-rpc-auth", drt.Rpc_auth)
 	}
-	return name, args, nil
+	return
 }

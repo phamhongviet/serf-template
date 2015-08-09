@@ -4,14 +4,14 @@ import "strings"
 import "errors"
 
 type Member struct {
-	Name   string
-	Addr   string
-	Port int
-	Tags   map[string]string
-	Status string
+	Name     string
+	Addr     string
+	Port     int
+	Tags     map[string]string
+	Status   string
 	Protocol map[string]int
 }
 
-type SerfOutput string {
+type SerfOutput struct {
 	Members []Member
 }

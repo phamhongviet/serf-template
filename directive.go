@@ -1,34 +1,34 @@
 package main
 
 import (
-	"io/ioutil"
 	"encoding/json"
+	"io/ioutil"
 )
 
 type Template struct {
-	Src string
+	Src  string
 	Dest string
-	Cmd string
+	Cmd  string
 }
 
 type Directive struct {
-	Serf string
-	Name string
-	Role string
-	Status string
-	Tags []string
-	Rpc-addr string
-	Rpc-auth string
+	Serf      string
+	Name      string
+	Role      string
+	Status    string
+	Tags      []string
+	Rpc_addr  string
+	Rpc_auth  string
 	Templates []Template
 }
 
-func ParseDirectives(config-file string) (Directive, error) {
-	config-json, err := ioutil.ReadFile(config-file)
+func ParseDirectives(config_file string) (Directive, error) {
+	config_json, err := ioutil.ReadFile(config_file)
 	if err != nil {
 		panic(err)
 	}
 	var directive Directive
-	err = json.Unmarshal(config-json, &directive)
+	err = json.Unmarshal(config_json, &directive)
 	if err != nil {
 		panic(err)
 	}
