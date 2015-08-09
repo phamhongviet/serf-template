@@ -54,6 +54,10 @@ func main() {
 		panic(err)
 	}
 
+	if DEBUG {
+		log.Printf("CMD: %s %s", cmd_name, cmd_args)
+	}
+
 	// exec serf command
 	cmd := exec.Command(cmd_name, cmd_args...)
 	members_json, err := cmd.Output()
