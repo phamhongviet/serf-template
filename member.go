@@ -19,7 +19,7 @@ type SerfOutput struct {
 
 func ParseMembers(serf_output []byte) ([]Member, error) {
 	var result SerfOutput
-	err := Unmarshal(serf_output, &result)
+	err := json.Unmarshal(serf_output, &result)
 	if err != nil {
 		return nil, err
 	}

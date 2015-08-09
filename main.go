@@ -8,7 +8,7 @@ import (
 	"os/exec"
 	//"strconv"
 	"log"
-	//"strings"
+	"strings"
 	//"text/template"
 )
 
@@ -73,9 +73,9 @@ func main() {
 	for i := 0; i < len(directives.Templates); i++ {
 		RenderTemplate(directives.Templates[i].Src, directives.Templates[i].Dest, members)
 
-		if directives.Templates[i].Command != "" {
-			cmd2_args := strings.Split(directives.Templates[i].Command, " ")
-			cmd2 = exec.Command(cmd2_args[0], cmd2_args[1:])
+		if directives.Templates[i].Cmd != "" {
+			cmd2_args := strings.Split(directives.Templates[i].Cmd, " ")
+			cmd2 := exec.Command(cmd2_args[0], cmd2_args[1:]...)
 			err := cmd2.Run()
 			if err != nil {
 				panic(err)
