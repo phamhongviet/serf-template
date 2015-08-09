@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"strconv"
+	"strings"
 )
 
 type Member struct {
@@ -22,6 +24,9 @@ func ParseMembers(serf_output []byte) ([]Member, error) {
 	err := json.Unmarshal(serf_output, &result)
 	if err != nil {
 		return nil, err
+	}
+	for i := 0; i < len(result.Members); i++ {
+		result.Members[i].Addr = strings.Split(result.Members[i].Addr, ":"+strconv.Itoa(result.Members[i].Port))[0]
 	}
 	return result.Members, nil
 }
