@@ -12,6 +12,7 @@ type Template struct {
 }
 
 type Directive struct {
+	Serf string
 	Name string
 	Role string
 	Status string

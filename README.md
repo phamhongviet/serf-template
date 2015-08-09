@@ -25,6 +25,7 @@ Instead of reading anything from stdin or environment variables, Serf Template g
 Example:
 
 	{
+	  "serf": "path/to/serf"
 	  "name": "regexp",
 	  "role": "regexp",
 	  "status": "regexp",
