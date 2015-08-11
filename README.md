@@ -46,7 +46,7 @@ Example:
 
 ## Template File
 
-Serf Template consumes template files in [Go Template][] format. Template files are rendered with a list of members from executing `serf members -format json` command. A member has `Name`, `Addr`, `Port`, `Tags` and `Status`.
+Serf Template consumes template files in [Go Template][] format. Template files are rendered with a list of members with `Name`, `Addr`, `Port`, `Tags` and `Status`.
 
 Member structure example:
 
