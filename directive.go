@@ -16,7 +16,7 @@ type Directive struct {
 	Name      string
 	Role      string
 	Status    string
-	Tags      []string
+	Tags      map[string]string
 	Rpc_addr  string `json:"rpc-addr"`
 	Rpc_auth  string `json:"rpc-auth"`
 	Templates []Template
@@ -31,6 +31,9 @@ func ParseDirectives(config_file string) (Directive, error) {
 	err = json.Unmarshal(config_json, &directive)
 	if err != nil {
 		panic(err)
+	}
+	if directive.Rpc_addr == "" {
+		directive.Rpc_addr = "127.0.0.1:7373"
 	}
 	return directive, nil
 }

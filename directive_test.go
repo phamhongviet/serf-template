@@ -25,22 +25,22 @@ func ExampleParseDirectives() {
 	fmt.Println(d.Role)
 	fmt.Println(d.Status)
 	fmt.Println(len(d.Tags))
-	fmt.Println(d.Tags[0])
-	fmt.Println(d.Tags[1])
+	fmt.Println(d.Tags["app"])
+	fmt.Println(d.Tags["port"])
 	fmt.Println(d.Rpc_addr)
 	fmt.Println(d.Rpc_auth)
 	fmt.Println(d.Templates[0].Src)
 	fmt.Println(d.Templates[0].Dest)
 	fmt.Println(d.Templates[0].Cmd)
 	// Output:
-	// {    []   []}
+	// {    map[] 127.0.0.1:7373  []}
 	// serf
 	// svr
 	// web
 	// alive
 	// 2
-	// app=a1
-	// port=80
+	// a1
+	// 80
 	// 127.0.0.1:7373
 	// rpcauthtoken
 	// /path/to/template.tpl
