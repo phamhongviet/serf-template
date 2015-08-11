@@ -9,16 +9,9 @@ Template rendering with Serf.
 
 ## Usage
 
-Use as one time runner:
+	$ serf-template config-file
 
-	serf-template config-file
-
-Use as Serf handler:
-
-	serf agent -event-handler serf-template config-file
-
-Serf Template should be invoked by all membership related events (member-join, member-leave, member-failed, member-update, and member-reap). Read more at [Event Handlers][] and [Event Handler Router][].        
-Instead of reading anything from stdin or environment variables, Serf Template get members' information from the RPC interface.
+Instead of reading anything from stdin or environment variables, Serf Template get members' information from the RPC interface. Serf Temlate subscribe to member related events from RPC stream (member-join, member-failed, member-update, member-leave and member-reap).
 
 ## Configuration
 
@@ -82,5 +75,3 @@ The above template file would produce a file like this:
 	server web-3 at 172.16.0.23 with serf at 7946 and httpd at 80
 
 [Go Template]: http://golang.org/pkg/text/template/ "Go Template"
-[Event Handlers]: https://serfdom.io/docs/agent/event-handlers.html "Serf Event Handlers"
-[Event Handler Router]: https://serfdom.io/docs/recipes/event-handler-router.html "Serf Event Handler Router"
