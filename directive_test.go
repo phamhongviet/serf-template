@@ -29,6 +29,7 @@ func ExampleParseDirectives() {
 	fmt.Println(d.Tags["port"])
 	fmt.Println(d.Rpc_addr)
 	fmt.Println(d.Rpc_auth)
+	fmt.Println(d.Rpc_timeout)
 	fmt.Println(d.Templates[0].Src)
 	fmt.Println(d.Templates[0].Dest)
 	fmt.Println(d.Templates[0].Cmd)
@@ -43,6 +44,7 @@ func ExampleParseDirectives() {
 	// 80
 	// 127.0.0.1:7373
 	// rpcauthtoken
+	// 500ms
 	// /path/to/template.tpl
 	// /path/to/result.file
 	// service dummy restart

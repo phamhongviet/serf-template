@@ -10,7 +10,7 @@ func ExampleRenderTemplate() {
 	members := []rpc.Member{
 		{
 			Name:   "web-1",
-			Addr:   []byte{172,16,0,21},
+			Addr:   []byte{172, 16, 0, 21},
 			Port:   7946,
 			Status: "alive",
 			Tags: map[string]string{
@@ -20,7 +20,7 @@ func ExampleRenderTemplate() {
 		},
 		{
 			Name:   "web-2",
-			Addr:   []byte{172,16,0,22},
+			Addr:   []byte{172, 16, 0, 22},
 			Port:   7946,
 			Status: "alive",
 			Tags: map[string]string{
@@ -30,7 +30,7 @@ func ExampleRenderTemplate() {
 		},
 		{
 			Name:   "web-3",
-			Addr:   []byte{172,16,0,23},
+			Addr:   []byte{172, 16, 0, 23},
 			Port:   7946,
 			Status: "alive",
 			Tags: map[string]string{

@@ -34,8 +34,11 @@ func ParseDirectives(config_file string) (Directive, error) {
 	if err != nil {
 		panic(err)
 	}
+	// default RPC address
 	if directive.Rpc_addr == "" {
 		directive.Rpc_addr = "127.0.0.1:7373"
 	}
+	// timeout in millisecond. time.Duration use nanosecond by default
+	directive.Rpc_timeout = directive.Rpc_timeout * 1000000
 	return directive, nil
 }

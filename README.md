@@ -36,6 +36,7 @@ Example:
 	  ],
 	  "rpc-addr": "127.0.0.1:7373",
 	  "rpc-auth": "rpcauthtoken",
+	  "rpc-timeout": 1000,
 	  "templates": [
 	    {
 	    "src": "/path/to/template.tpl",
