@@ -62,25 +62,38 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer rpc_client.Close()
 
-	// get members' information
-	members, err := rpc_client.MembersFiltered(directives.Tags, directives.Status, directives.Name)
+	// create input channel
+	ch := make(chan map[string]interface{})
+	_, err = rpc_client.Stream("member-join,member-failed,member-update,member-leave,member-reap", ch)
 	if err != nil {
 		panic(err)
 	}
 
-	// for each templates:
-	// - render template
-	// - execute command if any
-	for i := 0; i < len(directives.Templates); i++ {
-		RenderTemplate(directives.Templates[i].Src, directives.Templates[i].Dest, members)
+	for {
+		// wait for signal from serf
+		<-ch
 
-		if directives.Templates[i].Cmd != "" {
-			cmd_args := strings.Split(directives.Templates[i].Cmd, " ")
-			cmd := exec.Command(cmd_args[0], cmd_args[1:]...)
-			err := cmd.Run()
-			if err != nil {
-				panic(err)
+		// get members' information
+		members, err := rpc_client.MembersFiltered(directives.Tags, directives.Status, directives.Name)
+		if err != nil {
+			panic(err)
+		}
+
+		// for each templates:
+		// - render template
+		// - execute command if any
+		for i := 0; i < len(directives.Templates); i++ {
+			RenderTemplate(directives.Templates[i].Src, directives.Templates[i].Dest, members)
+
+			if directives.Templates[i].Cmd != "" {
+				cmd_args := strings.Split(directives.Templates[i].Cmd, " ")
+				cmd := exec.Command(cmd_args[0], cmd_args[1:]...)
+				err := cmd.Run()
+				if err != nil {
+					panic(err)
+				}
 			}
 		}
 	}
