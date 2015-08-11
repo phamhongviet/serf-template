@@ -18,7 +18,7 @@ Use as Serf handler:
 	serf agent -event-handler serf-template config-file
 
 Serf Template should be invoked by all membership related events (member-join, member-leave, member-failed, member-update, and member-reap). Read more at [Event Handlers][] and [Event Handler Router][].        
-Instead of reading anything from stdin or environment variables, Serf Template get members' information by executing `serf members`.
+Instead of reading anything from stdin or environment variables, Serf Template get members' information from the RPC interface.
 
 ## Configuration
 
@@ -29,11 +29,11 @@ Example:
 	  "name": "regexp",
 	  "role": "regexp",
 	  "status": "regexp",
-	  "tags": [
-	    "key1=value1",
-	    "key2=value2",
-	    "key3=value3"
-	  ],
+	  "tags": {
+	    "key1": "value1",
+	    "key2": "value2",
+	    "key3": "value3"
+	  },
 	  "rpc-addr": "127.0.0.1:7373",
 	  "rpc-auth": "rpcauthtoken",
 	  "rpc-timeout": 1000,
@@ -53,7 +53,7 @@ Example:
 
 ## Template File
 
-Serf Template consumes template files in [Go Template][] format. Template files are rendered with a list of members from executing `serf members -format json` command. A member has `Name`, `Addr`, `Port`, `Tags`, `Status` and `Protocol`.
+Serf Template consumes template files in [Go Template][] format. Template files are rendered with a list of members from executing `serf members -format json` command. A member has `Name`, `Addr`, `Port`, `Tags` and `Status`.
 
 Member structure example:
 
@@ -67,11 +67,6 @@ Member structure example:
 	    "role": "web"
 	  },
 	  "status": "failed",
-	  "protocol": {
-	    "max": 4,
-	    "min": 2,
-	    "version": 4
-	  }
 	}
 
 Template file example:
