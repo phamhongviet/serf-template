@@ -58,7 +58,7 @@ func main() {
 	}
 
 	// get members' information
-	members, err := rpc_client.Members()
+	members, err := rpc_client.MembersFiltered(directives.Tags, directives.Status, directives.Name)
 	if err != nil {
 		panic(err)
 	}
