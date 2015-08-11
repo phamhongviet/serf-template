@@ -3,10 +3,10 @@
 	"name" : "svr",
 	"role" : "web",
 	"status" : "alive",
-	"tags": [
-		"app=a1",
-		"port=80"
-	],
+	"tags": {
+		"app":"a1",
+		"port":"80"
+	},
 	"rpc-addr": "127.0.0.1:7373",
 	"rpc-auth": "rpcauthtoken",
 	"templates": [
