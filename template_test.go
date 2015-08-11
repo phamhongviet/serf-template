@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
+	rpc "github.com/hashicorp/serf/client"
 	"io/ioutil"
 )
 
 func ExampleRenderTemplate() {
-	members := []Member{
+	members := []rpc.Member{
 		{
 			Name:   "web-1",
-			Addr:   "172.16.0.21",
+			Addr:   []byte{172,16,0,21},
 			Port:   7946,
 			Status: "alive",
 			Tags: map[string]string{
@@ -19,7 +20,7 @@ func ExampleRenderTemplate() {
 		},
 		{
 			Name:   "web-2",
-			Addr:   "172.16.0.22",
+			Addr:   []byte{172,16,0,22},
 			Port:   7946,
 			Status: "alive",
 			Tags: map[string]string{
@@ -29,7 +30,7 @@ func ExampleRenderTemplate() {
 		},
 		{
 			Name:   "web-3",
-			Addr:   "172.16.0.23",
+			Addr:   []byte{172,16,0,23},
 			Port:   7946,
 			Status: "alive",
 			Tags: map[string]string{
@@ -44,13 +45,12 @@ func ExampleRenderTemplate() {
 		panic(err)
 	}
 	fmt.Println(string(out))
-/*
-Output:
-BEGIN
-server web-1 at 172.16.0.21 with serf at 7946 and nginx at 8080
-server web-2 at 172.16.0.22 with serf at 7946 and nginx at 8080
-server web-3 at 172.16.0.23 with serf at 7946 and httpd at 80
 
-END
-*/
+	// Output:
+	// BEGIN
+	// server web-1 at 172.16.0.21 with serf at 7946 and nginx at 8080
+	// server web-2 at 172.16.0.22 with serf at 7946 and nginx at 8080
+	// server web-3 at 172.16.0.23 with serf at 7946 and httpd at 80
+	//
+	// END
 }

@@ -7,18 +7,21 @@ import (
 	"os"
 	"os/exec"
 	//"strconv"
+	rpc "github.com/hashicorp/serf/client"
 	"log"
 	"strings"
 	//"text/template"
 )
 
 // exit codes
+/*
 const (
 	OK                    = iota
 	SYNTAX_ERROR          = iota
 	CMD_FAILED            = iota
 	TEMPLATE_PARSE_FAILED = iota
 )
+*/
 
 const (
 	DEBUG      = false
@@ -48,25 +51,14 @@ func main() {
 		log.Printf("directives: %s", directives)
 	}
 
-	// construct serf command from directive
-	cmd_name, cmd_args, err := ConstructSerfCommand(directives)
+	// create connection to the RPC interface
+	rpc_client, err := rpc.NewRPCClient(directives.Rpc_addr)
 	if err != nil {
 		panic(err)
 	}
 
-	if DEBUG {
-		log.Printf("CMD: %s %s", cmd_name, cmd_args)
-	}
-
-	// exec serf command
-	cmd := exec.Command(cmd_name, cmd_args...)
-	members_json, err := cmd.Output()
-	if err != nil {
-		panic(err)
-	}
-
-	// parse members
-	members, err := ParseMembers(members_json)
+	// get members' information
+	members, err := rpc_client.Members()
 	if err != nil {
 		panic(err)
 	}
@@ -78,9 +70,9 @@ func main() {
 		RenderTemplate(directives.Templates[i].Src, directives.Templates[i].Dest, members)
 
 		if directives.Templates[i].Cmd != "" {
-			cmd2_args := strings.Split(directives.Templates[i].Cmd, " ")
-			cmd2 := exec.Command(cmd2_args[0], cmd2_args[1:]...)
-			err := cmd2.Run()
+			cmd_args := strings.Split(directives.Templates[i].Cmd, " ")
+			cmd := exec.Command(cmd_args[0], cmd_args[1:]...)
+			err := cmd.Run()
 			if err != nil {
 				panic(err)
 			}
