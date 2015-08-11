@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"time"
 )
 
 type Template struct {
@@ -12,14 +13,15 @@ type Template struct {
 }
 
 type Directive struct {
-	Serf      string
-	Name      string
-	Role      string
-	Status    string
-	Tags      map[string]string
-	Rpc_addr  string `json:"rpc-addr"`
-	Rpc_auth  string `json:"rpc-auth"`
-	Templates []Template
+	Serf        string
+	Name        string
+	Role        string
+	Status      string
+	Tags        map[string]string
+	Rpc_addr    string        `json:"rpc-addr"`
+	Rpc_auth    string        `json:"rpc-auth"`
+	Rpc_timeout time.Duration `json:"rpc-timeout"`
+	Templates   []Template
 }
 
 func ParseDirectives(config_file string) (Directive, error) {

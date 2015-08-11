@@ -33,7 +33,7 @@ func ExampleParseDirectives() {
 	fmt.Println(d.Templates[0].Dest)
 	fmt.Println(d.Templates[0].Cmd)
 	// Output:
-	// {    map[] 127.0.0.1:7373  []}
+	// {    map[] 127.0.0.1:7373  0 []}
 	// serf
 	// svr
 	// web

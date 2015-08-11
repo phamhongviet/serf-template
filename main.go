@@ -51,8 +51,14 @@ func main() {
 		log.Printf("directives: %s", directives)
 	}
 
+	// create RPC config
+	rpc_config := rpc.Config{
+		Addr:    directives.Rpc_addr,
+		AuthKey: directives.Rpc_auth,
+		Timeout: directives.Rpc_timeout,
+	}
 	// create connection to the RPC interface
-	rpc_client, err := rpc.NewRPCClient(directives.Rpc_addr)
+	rpc_client, err := rpc.ClientFromConfig(&rpc_config)
 	if err != nil {
 		panic(err)
 	}
