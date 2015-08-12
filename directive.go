@@ -21,6 +21,7 @@ type Directive struct {
 	Rpc_addr    string        `json:"rpc-addr"`
 	Rpc_auth    string        `json:"rpc-auth"`
 	Rpc_timeout time.Duration `json:"rpc-timeout"`
+	Workers     int           `json:"rpc-workers"`
 	Templates   []Template
 }
 
@@ -33,6 +34,10 @@ func ParseDirectives(config_file string) (Directive, error) {
 	err = json.Unmarshal(config_json, &directive)
 	if err != nil {
 		panic(err)
+	}
+	// default RPC workers
+	if directive.Workers == 0 {
+		directive.Workers = 1
 	}
 	// default RPC address
 	if directive.Rpc_addr == "" {

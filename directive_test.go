@@ -30,11 +30,12 @@ func ExampleParseDirectives() {
 	fmt.Println(d.Rpc_addr)
 	fmt.Println(d.Rpc_auth)
 	fmt.Println(d.Rpc_timeout)
+	fmt.Println(d.Workers)
 	fmt.Println(d.Templates[0].Src)
 	fmt.Println(d.Templates[0].Dest)
 	fmt.Println(d.Templates[0].Cmd)
 	// Output:
-	// {    map[] 127.0.0.1:7373  0 []}
+	// {    map[] 127.0.0.1:7373  0 1 []}
 	// serf
 	// svr
 	// web
@@ -45,6 +46,7 @@ func ExampleParseDirectives() {
 	// 127.0.0.1:7373
 	// rpcauthtoken
 	// 500ms
+	// 5
 	// /path/to/template.tpl
 	// /path/to/result.file
 	// service dummy restart
