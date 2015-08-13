@@ -28,6 +28,10 @@ const (
 	DEBUG_FILE = "/tmp/serf_template.log"
 )
 
+const (
+	BUFFER_SIZE = 16
+)
+
 func main() {
 	if DEBUG {
 		log_file, _ := os.Create(DEBUG_FILE)
@@ -65,7 +69,7 @@ func main() {
 	defer rpc_client.Close()
 
 	// create input channel
-	ch := make(chan map[string]interface{})
+	ch := make(chan map[string]interface{}, BUFFER_SIZE)
 	_, err = rpc_client.Stream("member-join,member-failed,member-update,member-leave,member-reap", ch)
 	if err != nil {
 		panic(err)
