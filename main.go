@@ -2,38 +2,42 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"log"
-	"fmt"
 	"os"
 )
 
 const (
-	DEBUG      = true
-	DEBUG_FILE = "/tmp/serf_template.log"
+	DEBUG       = false
+	DEBUG_FILE  = "/var/log/serf_template.log"
+	CONFIG_FILE = "/etc/serf_template/config.json"
 )
 
 func main() {
-	fmt.Println("starting")
-	// if DEBUG {
-	// 	log_file, _ := os.Create(DEBUG_FILE)
-	// 	defer log_file.Close()
-	// 	log.SetOutput(log_file)
-	// 	log.Println("Serf Template starting")
-	// }
+	debug := flag.Bool("debug", DEBUG, "enable debug")
+	debugFile := flag.String("log", DEBUG_FILE, "log file for debuging")
+	configFile := flag.String("config", CONFIG_FILE, "path to the config file")
+	flag.Parse()
 
-	if len(os.Args) != 2 {
+	if *debug {
+		log_file, _ := os.Create(*debugFile)
+		defer log_file.Close()
+		log.SetOutput(log_file)
+		log.Println("Serf Template starting")
+	}
+
+	if *configFile == "" {
 		err := errors.New("No config file")
 		panic(err)
 	}
 
 	// parse directive from config file
-	directives, err := ParseDirectives(os.Args[1])
+	directives, err := ParseDirectives(*configFile)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Printf("parsed directives: %v\n", directives)
-	if DEBUG {
+	if *debug {
 		log.Printf("directives: %v", directives)
 	}
 
