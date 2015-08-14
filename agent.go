@@ -20,8 +20,7 @@ func NewAgent(directives *Directive) Agent {
 
 	deadNode := make(chan bool)
 	for i := 0; i < directives.Workers; i++ {
-		w := NewWorker(directives, &rpc_config, deadNode)
-		w.run()
+		NewWorker(directives, &rpc_config, deadNode)
 	}
 	return Agent{
 		Directives: directives,
@@ -33,7 +32,6 @@ func NewAgent(directives *Directive) Agent {
 func (a *Agent) run() {
 	for {
 		_ = <-a.DeadNode
-		w := NewWorker(a.Directives, a.RPCConfig, a.DeadNode)
-		w.run()
+		NewWorker(a.Directives, a.RPCConfig, a.DeadNode)
 	}
 }

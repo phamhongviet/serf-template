@@ -19,11 +19,14 @@ func NewWorker(config *Directive, rpc_config *rpc.Config, deadNode chan bool) *W
 		panic(err)
 	}
 
-	return &Worker{
+	w := Worker{
 		Directives: config,
 		Client:     rpc_client,
 		DeadNode:   deadNode,
 	}
+	go w.run()
+
+	return &w
 }
 
 func (w *Worker) run() {
