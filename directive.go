@@ -25,15 +25,15 @@ type Directive struct {
 	Templates   []Template
 }
 
-func ParseDirectives(config_file string) (Directive, error) {
+func ParseDirectives(config_file string) (*Directive, error) {
 	config_json, err := ioutil.ReadFile(config_file)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	var directive Directive
 	err = json.Unmarshal(config_json, &directive)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	// default RPC workers
 	if directive.Workers == 0 {
@@ -45,5 +45,5 @@ func ParseDirectives(config_file string) (Directive, error) {
 	}
 	// timeout in millisecond. time.Duration use nanosecond by default
 	directive.Rpc_timeout = directive.Rpc_timeout * 1000000
-	return directive, nil
+	return &directive, nil
 }

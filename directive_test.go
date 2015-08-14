@@ -1,21 +1,39 @@
 package main
 
 import (
-	//"testing"
+	"os"
 	"fmt"
 )
 
 func ExampleParseDirectives() {
-	var d Directive
+	var d *Directive
 	var e error
-	// example 1: no config
+	// example 1: bad path
+	d, e = ParseDirectives("test/unknown.json")
+	if e == nil || d != nil {
+		panic(e)
+	}
+
+	// example 2: bad json
+	if _, e = os.Create("test/empty"); e != nil {
+		panic(e)
+	}
+	d, e = ParseDirectives("test/empty")
+	if e == nil || d != nil {
+		panic(e)
+	}
+	if e = os.Remove("test/empty"); e != nil {
+		panic(e)
+	}
+
+	// example 3: no config
 	d, e = ParseDirectives("test/config_1.json")
 	if e != nil {
 		panic(e)
 	}
-	fmt.Println(d)
+	fmt.Println(*d)
 
-	// example 2: full config
+	// example 4: full config
 	d, e = ParseDirectives("test/config_2.json")
 	if e != nil {
 		panic(e)

@@ -38,10 +38,10 @@ func main() {
 	}
 
 	if *debug {
-		log.Printf("directives: %v", directives)
+		log.Printf("directives: %v", *directives)
 	}
 
-	agent := NewAgent(&directives)
+	agent := NewAgent(directives)
 
 	agent.run()
 }
