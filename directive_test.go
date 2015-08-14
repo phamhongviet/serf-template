@@ -49,5 +49,5 @@ func ExampleParseDirectives() {
 	// 5
 	// /path/to/template.tpl
 	// /path/to/result.file
-	// service dummy restart
+	// ls
 }

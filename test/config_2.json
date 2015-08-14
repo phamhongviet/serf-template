@@ -15,7 +15,7 @@
 	{
 		"src": "/path/to/template.tpl",
 		"dest": "/path/to/result.file",
-		"cmd": "service dummy restart"
+		"cmd": "ls"
 	}
 	]
 }
